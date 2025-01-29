@@ -183,6 +183,54 @@ $users_result = $conn->query($sql_all_users);
         .user-action-btn:hover {
             background-color: #0056b3;
         }
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .modal button {
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .delete-btn {
+            background-color: #dc3545; /* Red */
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333; /* Darker red */
+        }
+
+        .cancel-btn {
+            background-color: #6c757d; /* Gray */
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            background-color: #5a6268; /* Darker gray */
+        }
     </style>
 </head>
 <body>
@@ -206,12 +254,7 @@ $users_result = $conn->query($sql_all_users);
             
         </div>
 
-        <!-- Dashboard Actions -->
-        <!-- <div class="buttons">
-            <a href="add_category.php">Add Category</a>
-            <a href="add_item.php">Add Item</a>
-            <a href="view_inventory.php">View Inventory</a>
-        </div> -->
+       
 
         <!-- User Listing (Admin only) -->
         <?php if ($user['role'] == 'admin') : ?>
@@ -230,16 +273,61 @@ $users_result = $conn->query($sql_all_users);
                         <td><?php echo $row['email']; ?></td>
                         <td>
                             <a href="edit.php?id=<?php echo $row['id']; ?>" class="user-action-btn">Edit</a>
-                            <form method="POST" action="delete.php" style="display:inline;">
+                            <!-- <form method="POST" action="delete.php" style="display:inline;">
                                 <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
                                 <button type="submit" class="user-action-btn" style="background-color: #ff4d4d;">Delete</button>
-                            </form>
+
+
+                                
+                            </form> -->
+
+                            <button class="user-action-btn delete-btn" onclick="showModal(<?php echo $row['id']; ?>)">Delete</button>
+
+                     
+
+                            
                         </td>
                     </tr>
                 <?php endwhile; ?>
             </table>
         <?php endif; ?>
     </div>
+
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <h3>Are you sure you want to delete this user?</h3>
+            <form id="deleteForm" method="POST" action="delete.php">
+                <input type="hidden" name="id" id="userIdToDelete" value="">
+                <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="delete-btn">Delete</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript for Modal Handling -->
+    <script>
+        function showModal(userId) {
+            document.getElementById('userIdToDelete').value = userId; // Set user ID in hidden input
+            document.getElementById('myModal').style.display = 'flex'; // Show modal
+        }
+
+        function closeModal() {
+            document.getElementById('myModal').style.display = 'none'; // Hide modal
+        }
+        
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+          var modal = document.getElementById('myModal');
+          if (event.target == modal) {
+              closeModal();
+          }
+        }
+    </script>
+    
+
+
+
 </body>
 </html>
 

@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['id'])) {
-    header("Location: login.php");
+    header("Location: dashboard.php");
     exit;
 }
 
@@ -16,9 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
     $sql = "DELETE FROM users WHERE id='$id'";
 
     if ($conn->query($sql) === TRUE) {
-        session_unset(); // Clear session
-        session_destroy(); // Destroy session
-        header("Location: dashboard.php");
+        header("Location: dashboard.php?message=User+deleted+successfully");
+
 
         exit;
     } else {
@@ -106,25 +105,13 @@ $conn->close();
     </style>
 </head>
 <body>
-    <!-- <div style="text-align: center; margin-top: 50px;">
-        <h2>Delete Your Account</h2>
-        <p>Once deleted, you won't be able to recover your account.</p>
 
-        <!-- Button triggers the modal -->
-        <button class="trigger-btn" onclick="showModal()">Delete Account</button>
-    </div> -->
+    <div>
+    
+        <button class="trigger-btn" >Delete Account</button>
+    </div>
 
-    <!-- Modal -->
-    <!-- <div id="myModal" class="modal">
-        <div class="modal-content">
-            <h3>Are you sure you want to delete your account?</h3>
-            <form id="deleteForm" method="POST">
-                <input type="hidden" name="id" value="<?php echo $_SESSION['id']; ?>">
-                <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
-                <button type="submit" class="delete-btn">Delete</button>
-            </form>
-        </div>
-    </div> -->
+  
 
    
 </body>

@@ -32,8 +32,8 @@ $categories = $conn->query($category_query);
     <title>Add Category</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -43,58 +43,19 @@ $categories = $conn->query($category_query);
             box-sizing: border-box;
         }
 
-        /* Styling for the category list */
-        .category-list {
-            background: linear-gradient(135deg, #ffffff, #f9fafc);
-            border: 1px solid #e0e0e0;
-            padding: 15px;
+        /* Center container */
+        .container {
+            background-color: white;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            max-height: 400px;
-            overflow-y: auto;
-            width: 400px;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-
-        .category-list ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .category-list li {
-            background-color: #007bff;
-            color: #ffffff;
-            padding: 8px 12px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            font-weight: 500;
-            transition: background-color 0.3s ease-in-out;
-        }
-
-        .category-list li:hover {
-            background-color: #0056b3;
-        }
-
-        .category-list h3 {
-            font-size: 20px;
-            color: #333;
-            margin-bottom: 12px;
-            text-align: center;
-            font-weight: bold;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 5px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
         }
 
         /* Form Styling */
         form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
+            margin-bottom: 20px;
         }
 
         form label {
@@ -106,10 +67,10 @@ $categories = $conn->query($category_query);
 
         form input[type="text"] {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             font-size: 16px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 6px;
             margin-bottom: 20px;
             box-sizing: border-box;
         }
@@ -118,61 +79,91 @@ $categories = $conn->query($category_query);
             width: 100%;
             padding: 12px;
             font-size: 16px;
-            background-color: #007bff;
-            color: #fff;
+            background-color: #007bff; /* Bootstrap primary color */
+            color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out; /* Added transform for effect */
         }
 
         form button:hover {
-            background-color: #0056b3;
+            background-color: #0056b3; /* Darker blue */
+            transform: translateY(-2px); /* Lift effect */
         }
 
+        /* Message styling */
         .message {
             margin-top: 20px;
             padding: 15px;
-            background-color: #e7f3e7;
-            color: #4caf50;
+            background-color: #e7f3e7; /* Light green */
+            color: #4caf50; /* Green text */
             border-radius: 5px;
             text-align: center;
         }
 
         .message.error {
-            background-color: #f8d7da;
-            color: #dc3545;
+            background-color: #f8d7da; /* Light red */
+            color: #dc3545; /* Red text */
         }
-        .button-container {
-        display: flex;
-        justify-content: flex-start; /* Aligns horizontally to the left */
-        align-items: flex-end; /* Aligns vertically to the bottom */
-        height: 100vh; /* Full height of the screen */
-        position: relative;
-    }
 
-    /* Button styling */
-    .btn {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        text-align: center;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        text-decoration: none; /* Remove underline */
-        transition: background-color 0.3s;
-    }
+        /* Category list styling */
+        .category-list {
+            background-color: #f9fafc; /* Light gray */
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            max-height: 300px; /* Set a max height for scrolling */
+            overflow-y: auto; /* Enable scrolling */
+        }
 
-    .btn:hover {
-        background-color: #0056b3;
-    }
+        .category-list h3 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 12px;
+            text-align: center;
+        }
 
-    .btn:active {
-        background-color: #003f7d;
-    }
+        .category-list ul {
+            list-style-type: none; /* Remove bullet points */
+            padding-left: 0; /* Remove padding on left */
+        }
+
+        .category-list li {
+            background-color: #007bff; /* Blue background for category items */
+            color: white; /* White text color */
+            padding: 10px; /* Padding for items */
+            margin-bottom: 8px; /* Space between items */
+            border-radius: 6px; /* Rounded corners for items */
+            transition: background-color 0.3s ease-in-out; /* Smooth transition effect */
+        }
+
+        .category-list li:hover {
+           background-color:#0056b3; /* Darker blue on hover */
+       }
+       
+       /* Button styling for navigation back to dashboard */
+       .btn {
+           display:inline-block; 
+           padding :10 px20 px ; 
+           background-color:#007bff ; 
+           color:white ; 
+           text-align:center ; 
+           border:none ; 
+           border-radius :5 px ; 
+           cursor:pointer ; 
+           font-size :16 px ; 
+           text-decoration:none ; 
+           transition :background-color0.3 s ;
+       }
+       
+       .btn:hover{
+           background-color:#0056b3 ;
+       }
+       
+       .btn :active{
+           background-color:#003f7d ;
+       }
     </style>
 </head>
 <body>

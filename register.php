@@ -12,6 +12,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $confirm_password = $_POST['confirm_password'];
     $role = $_POST['role'];
 
+
+       // Check username uniqueness
+       $check_username = $conn->prepare("SELECT username FROM users WHERE username = ?");
+       $check_username->bind_param("s", $username);
+       $check_username->execute();
+       $check_username->store_result();
+       
+       if ($check_username->num_rows > 0) {
+           echo "<script>
+                   alert('Username already exists!');
+                   window.history.back();
+                 </script>";
+           exit;
+       }
+
     // Check if passwords match
     if ($password !== $confirm_password) {
         echo "<script>
@@ -20,6 +35,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
               </script>";
         exit;
     }
+
+
+        // Validate email format
+        if (!preg_match('/^[a-zA-Z0-9._%+-]+@gmail\.com$/', $email)) {
+            echo "<script>
+                    alert('Invalid email format! Must be @gmail.com');
+                    window.history.back();
+                  </script>";
+            exit;
+        }
 
     $hashed_password = password_hash($password, PASSWORD_BCRYPT); // Encrypt password
 
@@ -42,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -112,23 +138,99 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .form-footer a:hover {
             text-decoration: underline;
         }
+        .error{
+            color:red;
+        }
     </style>
     
 </head>
 <body>
     <div class="form-container">
         <h2>Register</h2>
-        <form method="POST">
-            <input type="text" name="username" placeholder="Enter Username" required>
-            <input type="email" name="email" placeholder="Enter Email" required>
-            <input type="password" name="password" placeholder="Enter Password" required>
-            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+        <form method="POST" onsubmit="return validateForm()">
+            <div>
+            <input type="text" name="username" id="username"  placeholder="Enter Username" required>
+            <span id="usernameError" class="error"></span>
+            <div>
+             <div>
+            <input type="email" id="email" name="email" placeholder="Enter Email" required>
+
+            <span id="emailError" class="error"></span>
+           </div>
+
+           <div>
+            <input type="password" id="password" name="password" placeholder="Enter Password" required>
+            <span id="passwordError" class="error"></span>
+
+    </div>
+
+          <div>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+            <span class="confirm_passwordError" class="error"></span>
+    </div>
+           
+           
             <input type="text" name="role" placeholder="Enter the role">
+
+
             <button type="submit">Register</button>
         </form>
         <div class="form-footer">
             <p>Already have an account? <a href="login.php">Login here</a></p>
         </div>
     </div>
+    <script>
+        function validateForm() {
+            // Get values
+            const username = document.getElementById("username").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const confirmPassword = document.getElementById("confirm_password").value.trim();
+
+            // Clear previous errors
+            document.querySelectorAll('.error').forEach(e => e.textContent = '');
+
+            // Username validation
+            const usernameRegex = /^[a-zA-Z][a-zA-Z0-9!@#$%^&*]{3,}$/;
+            if (!username) {
+                showError('usernameError', 'Username is required');
+                return false;
+            }
+            if (/^\d/.test(username)) {
+                showError('usernameError', 'Cannot start with number');
+                return false;
+            }
+            if (!usernameRegex.test(username)) {
+                showError('usernameError', 'Must include letters, numbers & one symbol');
+                return false;
+            }
+
+            // Email validation
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+            if (!emailRegex.test(email)) {
+                showError('emailError', 'Invalid email (must be @gmail.com)');
+                return false;
+            }
+
+            // Password validation
+            if (password.length < 8 || password.length > 20) {
+                showError('passwordError', 'Password must be 8-20 characters');
+                return false;
+            }
+
+            // Confirm password
+            if (password !== confirmPassword) {
+                showError('confirmPasswordError', 'Passwords do not match');
+                return false;
+            }
+
+            return true;
+        }
+
+        function showError(elementId, message) {
+            document.getElementById(elementId).textContent = message;
+        }
+    </script>
+
 </body>
 </html>
