@@ -1,5 +1,8 @@
 <?php
-$conn = new mysqli("localhost", "root", "", "inv_mang");
+include 'db_connection.php';
+
+
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'];
     $username = $_POST['username'];
@@ -21,6 +24,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user = $result->fetch_assoc();
 }
 ?>
+
+
+
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">

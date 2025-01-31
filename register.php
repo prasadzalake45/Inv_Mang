@@ -1,9 +1,6 @@
 <?php
-// Database connection
-$conn = new mysqli("localhost", "root", "", "inv_mang");
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+
+include 'db_connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
@@ -11,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
     $role = $_POST['role'];
-
+    
 
        // Check username uniqueness
        $check_username = $conn->prepare("SELECT username FROM users WHERE username = ?");
@@ -19,6 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
        $check_username->execute();
        $check_username->store_result();
        
+
+
        if ($check_username->num_rows > 0) {
            echo "<script>
                    alert('Username already exists!');

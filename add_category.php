@@ -5,10 +5,9 @@ if (!isset($_SESSION['id'])) {
     exit;
 }
 
-$conn = new mysqli("localhost", "root", "", "inv_mang");
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include 'db_connection.php';
+
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $category_name = $conn->real_escape_string($_POST['category_name']);
@@ -31,139 +30,158 @@ $categories = $conn->query($category_query);
 <head>
     <title>Add Category</title>
     <style>
+        /* Reset default margins and paddings */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f0f2f5;
+            background-color: #f9f9f9;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
         }
 
-        /* Center container */
+        /* Main container for content */
         .container {
             background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
             width: 100%;
-            max-width: 500px;
+            max-width: 450px;
         }
 
-        /* Form Styling */
-        form {
+        h2 {
+            text-align: center;
             margin-bottom: 20px;
-        }
-
-        form label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
             color: #333;
         }
 
-        form input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            box-sizing: border-box;
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        form button {
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"] {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             font-size: 16px;
-            background-color: #007bff; /* Bootstrap primary color */
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out; /* Added transform for effect */
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        form button:hover {
-            background-color: #0056b3; /* Darker blue */
-            transform: translateY(-2px); /* Lift effect */
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
         }
 
-        /* Message styling */
+        button:active {
+            background-color: #003f7d;
+        }
+
         .message {
             margin-top: 20px;
             padding: 15px;
-            background-color: #e7f3e7; /* Light green */
-            color: #4caf50; /* Green text */
+            background-color: #e7f3e7;
+            color: #4caf50;
             border-radius: 5px;
             text-align: center;
         }
 
         .message.error {
-            background-color: #f8d7da; /* Light red */
-            color: #dc3545; /* Red text */
+            background-color: #f8d7da;
+            color: #dc3545;
         }
 
-        /* Category list styling */
         .category-list {
-            background-color: #f9fafc; /* Light gray */
+            background-color: #f9fafc;
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             padding: 15px;
-            max-height: 300px; /* Set a max height for scrolling */
-            overflow-y: auto; /* Enable scrolling */
+            margin-top: 20px;
+            width: 100%;
+            max-width: 450px;
         }
 
         .category-list h3 {
-            font-size: 20px;
+            font-size: 18px;
             color: #333;
             margin-bottom: 12px;
             text-align: center;
         }
 
-        .category-list ul {
-            list-style-type: none; /* Remove bullet points */
-            padding-left: 0; /* Remove padding on left */
+        ul {
+            list-style: none;
+            padding-left: 0;
         }
 
-        .category-list li {
-            background-color: #007bff; /* Blue background for category items */
-            color: white; /* White text color */
-            padding: 10px; /* Padding for items */
-            margin-bottom: 8px; /* Space between items */
-            border-radius: 6px; /* Rounded corners for items */
-            transition: background-color 0.3s ease-in-out; /* Smooth transition effect */
+        li {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease-in-out;
         }
 
-        .category-list li:hover {
-           background-color:#0056b3; /* Darker blue on hover */
-       }
-       
-       /* Button styling for navigation back to dashboard */
-       .btn {
-           display:inline-block; 
-           padding :10 px20 px ; 
-           background-color:#007bff ; 
-           color:white ; 
-           text-align:center ; 
-           border:none ; 
-           border-radius :5 px ; 
-           cursor:pointer ; 
-           font-size :16 px ; 
-           text-decoration:none ; 
-           transition :background-color0.3 s ;
-       }
-       
-       .btn:hover{
-           background-color:#0056b3 ;
-       }
-       
-       .btn :active{
-           background-color:#003f7d ;
-       }
+        li:hover {
+            background-color: #0056b3;
+        }
+
+        .btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn:active {
+            background-color: #003f7d;
+        }
     </style>
 </head>
 <body>

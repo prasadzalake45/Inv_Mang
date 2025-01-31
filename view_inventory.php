@@ -5,10 +5,7 @@ if (!isset($_SESSION['id'])) {
     exit;
 }
 
-$conn = new mysqli("localhost", "root", "", "inv_mang");
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include 'db_connection.php';
 
 $sql = "SELECT Items.Item_id, Items.Item_name, Items.price, Items.quantity, 
         Category.Category_name 
@@ -72,18 +69,21 @@ $result = $conn->query($sql);
             border-bottom: none;
         }
         .btn {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        text-align: center;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        text-decoration: none; /* Remove underline */
-        transition: background-color 0.3s;
-    }
+    position: absolute;
+    top: 20px; /* Adjust as needed */
+    left: 20px; /* Adjust as needed */
+    padding: 12px 24px;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+}
 
     .btn:hover {
         background-color: #0056b3;

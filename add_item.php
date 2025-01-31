@@ -4,11 +4,7 @@ if (!isset($_SESSION['id'])) {
     header("Location: login.php");
     exit;
 }
-
-$conn = new mysqli("localhost", "root", "", "inv_mang");
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include 'db_connection.php';
 
 // Fetch categories for dropdown
 $categories = $conn->query("SELECT * FROM Category");
@@ -35,119 +31,135 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Add Item</title>
      <style>
         /* General Body Styling */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f7fc;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
+        /* General Body Styling */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f4f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #333;
+}
 
-        /* Form Container Styling */
-        form {
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 30px 40px;
-            width: 100%;
-            max-width: 400px;
-            box-sizing: border-box;
-        }
+/* Form Container Styling */
+form {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    padding: 40px 50px;
+    width: 100%;
+    max-width: 450px;
+    box-sizing: border-box;
+    transition: transform 0.3s ease;
+}
 
-        /* Form Heading Styling */
-        form h2 {
-            font-size: 24px;
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-        }
+form:hover {
+    transform: translateY(-5px);
+}
 
-        /* Label Styling */
-        form label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 8px;
-            color: #555;
-        }
+/* Form Heading Styling */
+form h2 {
+    font-size: 28px;
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+    font-weight: bold;
+}
 
-        /* Input Field Styling */
-        form input[type="text"],
-        form input[type="number"],
-        form select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 14px;
-            transition: border-color 0.3s ease;
-        }
+/* Label Styling */
+form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #666;
+}
 
-        /* Input Field Focus Effect */
-        form input:focus,
-        form select:focus {
-            border-color: #007bff;
-            outline: none;
-        }
+/* Input Field Styling */
+form input[type="text"],
+form input[type="number"],
+form select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+}
 
-        /* Button Styling */
-        form button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 12px;
-            width: 100%;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
+/* Input Field Focus Effect */
+form input:focus,
+form select:focus {
+    border-color: #007bff;
+    background-color: #fff;
+    outline: none;
+}
 
-        /* Button Hover Effect */
-        form button:hover {
-            background-color: #0056b3;
-            transform: translateY(-2px);
-        }
+/* Button Styling */
+form button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    width: 100%;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: bold;
+}
 
-        /* Success/Error Message Styling */
-        body p {
-            margin-top: 10px;
-            font-size: 14px;
-            text-align: center;
-        }
+/* Button Hover Effect */
+form button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
 
-        body p.success {
-            color: #28a745;
-        }
+/* Success/Error Message Styling */
+body p {
+    margin-top: 15px;
+    font-size: 15px;
+    text-align: center;
+}
 
-        body p.error {
-            color: #dc3545;
-        }
-        .btn {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        text-align: center;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        text-decoration: none; /* Remove underline */
-        transition: background-color 0.3s;
-    }
+body p.success {
+    color: #28a745;
+}
 
-    .btn:hover {
-        background-color: #0056b3;
-    }
+body p.error {
+    color: #dc3545;
+}
 
-    .btn:active {
-        background-color: #003f7d;
-    }
+.btn {
+    position: absolute;
+    top: 20px; /* Adjust as needed */
+    left: 20px; /* Adjust as needed */
+    padding: 12px 24px;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.btn:active {
+    background-color: #003f7d;
+}
+
     </style>
    
 </head>

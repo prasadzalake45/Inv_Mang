@@ -5,10 +5,8 @@ if (!isset($_SESSION['id'])) {
     exit;
 }
 
-$conn = new mysqli("localhost", "root", "", "inv_mang");
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+
+include 'db_connection.php';
 
 // Fetch user details
 $id = $_SESSION['id'];
@@ -241,6 +239,7 @@ $users_result = $conn->query($sql_all_users);
         <a href="add_category.php">Add Category</a>
         <a href="add_item.php">Add Item</a>
         <a href="view_inventory.php">View Inventory</a>
+        <a href="add_orders.php">Orders</a>
         <a href="logout.php">Logout</a>
     </div>
 
@@ -253,7 +252,7 @@ $users_result = $conn->query($sql_all_users);
           
             
         </div>
-
+        
        
 
         <!-- User Listing (Admin only) -->
@@ -292,6 +291,7 @@ $users_result = $conn->query($sql_all_users);
             </table>
         <?php endif; ?>
     </div>
+                
 
 
     <div id="myModal" class="modal">

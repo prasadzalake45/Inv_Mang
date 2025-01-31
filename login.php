@@ -1,9 +1,7 @@
 <?php
 session_start();
-$conn = new mysqli("localhost", "root", "", "inv_mang");
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include 'db_connection.php';
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
@@ -111,8 +109,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="form-container">
         <h2>Login</h2>
         <form method="POST">
-            <input type="text" name="username" placeholder="Enter Username" required>
-            <input type="password" name="password" placeholder="Enter Password" required>
+            <input type="text" name="username" placeholder="Enter Username" values="" required>
+            <input type="password" name="password" placeholder="Enter Password" values=""  required>
             <button type="submit">Login</button>
         </form>
         <div class="form-footer">
