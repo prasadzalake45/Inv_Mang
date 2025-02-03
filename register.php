@@ -4,6 +4,8 @@ include 'db_connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
+    $First_Name=$_POST['First_Name'];
+    $Last_Name=$_POST['Last_Name'];
     $email = $_POST['email'];
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
@@ -47,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $hashed_password = password_hash($password, PASSWORD_BCRYPT); // Encrypt password
 
-    $sql = "INSERT INTO users (username, email, password, role) VALUES ('$username', '$email', '$hashed_password', '$role')";
+    $sql = "INSERT INTO users (username,First_Name,Last_Name, email, password, role) VALUES ('$username','$First_Name','$Last_Name', '$email', '$hashed_password', '$role')";
     if ($conn->query($sql)) {
         echo "<script>
                 alert('User successfully registered! You can now log in.');
@@ -140,6 +142,53 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .error{
             color:red;
         }
+
+        form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #666;
+}
+
+/* Dropdown Styling */
+form select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+/* Focus Effect */
+form select:focus {
+    border-color: #007bff;
+    background-color: #fff;
+    outline: none;
+}
+
+/* Button Styling */
+form button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    width: 100%;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: bold;
+}
+
+/* Button Hover Effect */
+form button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
     </style>
     
 </head>
@@ -150,7 +199,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div>
             <input type="text" name="username" id="username"  placeholder="Enter Username" required>
             <span id="usernameError" class="error"></span>
-            <div>
+          </div>
+
+
+          <div>
+            <input type="text" id="First_Name" name="First_Name" placeholder="Enter First Name" required>
+
+            <span id="emailError" class="error"></span>
+           </div>
+
+
+           <div>
+            <input type="text" id="Last_Name" name="Last_Name" placeholder="Enter Last Name" required>
+
+            <span id="emailError" class="error"></span>
+           </div>
+
+
+
+
+
              <div>
             <input type="email" id="email" name="email" placeholder="Enter Email" required>
 
@@ -169,7 +237,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
            
            
-            <input type="text" name="role" placeholder="Enter the role">
+    <label for="role">Role:</label>
+<select name="role" required>
+    <option value="admin">admin</option>
+    <option value="user">user</option>
+</select>
 
 
             <button type="submit">Register</button>

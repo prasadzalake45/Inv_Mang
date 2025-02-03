@@ -24,211 +24,263 @@ $users_result = $conn->query($sql_all_users);
 <head>
     <title>Dashboard</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f2f5;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            height: 100vh;
-        }
+       body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100vh;
+}
 
-        .sidebar {
-            width: 250px;
-            background-color: #2c3e50;
-            color: white;
-            padding-top: 20px;
-            position: fixed;
-            height: 100%;
-            top: 0;
-            left: 0;
-        }
+.sidebar {
+    width: 250px;
+    background-color: #2c3e50;
+    color: white;
+    padding-top: 20px;
+    position: fixed;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-right: 2px solid #34495e;
+}
 
-        .sidebar a {
-            display: block;
-            padding: 15px;
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-            transition: background-color 0.3s;
-        }
+.sidebar a {
+    display: block;
+    padding: 15px;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
 
-        .sidebar a:hover {
-            background-color: #34495e;
-        }
+.sidebar a:hover {
+    background-color: #34495e;
+}
 
-        .container {
-            margin-left: 270px; /* To accommodate the sidebar */
-            width: calc(100% - 270px);
-            padding: 30px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
+.container {
+    margin-left: 270px; /* To accommodate the sidebar */
+    width: calc(100% - 270px);
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    transition: margin-left 0.3s ease;
+}
 
-        .user-details {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-        }
 
-        .logout-btn {
-            background-color: #ff4d4d;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s;
-        }
 
-        .logout-btn:hover {
-            background-color: #e60000;
-        }
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 20px;
+}
 
-        h2 {
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: #333;
-            font-weight: bold;
-        }
+.header p {
+    font-size: 20px;
+    color: #333;
+    margin-right: 20px;
+    margin-bottom: 10px;
+}
 
-        p {
-            font-size: 16px;
-            color: #555;
-            margin-bottom: 10px;
-        }
+.user-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
 
-        .buttons {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            margin-top: 30px;
-        }
+.view-info-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    align-self: flex-end; /* Align the button to the left */
+    margin-top: 10px; /* Add space between the info and the button */
+}
 
-        .buttons a {
-            background-color: #007bff;
-            color: white;
-            padding: 15px 0;
-            text-align: center;
-            border-radius: 5px;
-            font-size: 18px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
+.view-info-btn:hover {
+    background-color: #0056b3;
+}
 
-        .buttons a:hover {
-            background-color: #0056b3;
-        }
+.user-info {
+    display: none;
+    margin-top: 10px;
+    font-size: 16px;
+    color: #555;
+}
 
-        .buttons a:active {
-            background-color: #003f7d;
-        }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                width: 100%;
-                margin-left: 0;
-                padding: 20px;
-            }
+.logout-btn {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
 
-            .buttons {
-                grid-template-columns: 1fr;
-            }
+.logout-btn:hover {
+    background-color: #e60000;
+}
 
-            .sidebar {
-                width: 200px;
-            }
-        }
+h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #333;
+    font-weight: bold;
+}
 
-        /* Table Styling */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 30px;
-        }
+p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 10px;
+}
 
-        table, th, td {
-            border: 1px solid #ddd;
-        }
+.buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-top: 30px;
+}
 
-        th, td {
-            padding: 12px;
-            text-align: left;
-        }
+.buttons a {
+    background-color: #007bff;
+    color: white;
+    padding: 15px 0;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
 
-        th {
-            background-color: #f4f4f4;
-            font-weight: bold;
-        }
+.buttons a:hover {
+    background-color: #0056b3;
+}
 
-        td {
-            background-color: #f9f9f9;
-        }
+.buttons a:active {
+    background-color: #003f7d;
+}
 
-        .user-action-btn {
-            padding: 5px 10px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-right: 5px;
-        }
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+        margin-left: 0;
+        padding: 20px;
+    }
 
-        .user-action-btn:hover {
-            background-color: #0056b3;
-        }
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed;
-            z-index: 1; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
-            justify-content: center;
-            align-items: center;
-        }
+    .buttons {
+        grid-template-columns: 1fr;
+    }
 
-        .modal-content {
-            background-color: #fefefe;
-            padding: 20px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-        }
+    .sidebar {
+        width: 200px;
+    }
+}
 
-        .modal button {
-            margin: 10px;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
 
-        .delete-btn {
-            background-color: #dc3545; /* Red */
-            color: white;
-        }
+table, th, td {
+    border: 1px solid #ddd;
+}
 
-        .delete-btn:hover {
-            background-color: #c82333; /* Darker red */
-        }
+th, td {
+    padding: 12px;
+    text-align: left;
+}
 
-        .cancel-btn {
-            background-color: #6c757d; /* Gray */
-            color: white;
-        }
+th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
 
-        .cancel-btn:hover {
-            background-color: #5a6268; /* Darker gray */
-        }
+td {
+    background-color: #f9f9f9;
+}
+
+.user-action-btn {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-right: 5px;
+    transition: background-color 0.3s;
+}
+
+.user-action-btn:hover {
+    background-color: #0056b3;
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.modal button {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.delete-btn {
+    background-color: #dc3545; /* Red */
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #c82333; /* Darker red */
+}
+
+.cancel-btn {
+    background-color: #6c757d; /* Gray */
+    color: white;
+}
+
+.cancel-btn:hover {
+    background-color: #5a6268; /* Darker gray */
+}
     </style>
 </head>
 <body>
@@ -246,12 +298,22 @@ $users_result = $conn->query($sql_all_users);
     <!-- Main Content -->
     <div class="container">
         <!-- User Details -->
-        <div class="user-details">
+        <div class="container">
+    <!-- User Details -->
+    <div class="user-details">
+        <div class="header">
             <p><strong>Welcome, <?php echo $user['username']; ?>!</strong></p>
-            <p><strong>Email:</strong> <?php echo $user['email']; ?></p>
-          
+            
+            <p>Role :<?php echo $user['role']; ?></p>
             
         </div>
+        <button class="view-info-btn" onclick="toggleUserInfo()">View Info</button>
+        <div id="userInfo" class="user-info" style="display: none;">
+            <p><strong>First Name:</strong> <?php echo $user['First_Name']; ?></p>
+            <p><strong>Last Name:</strong> <?php echo $user['Last_Name']; ?></p>
+        </div>
+    </div>
+</div>
         
        
 
@@ -307,6 +369,15 @@ $users_result = $conn->query($sql_all_users);
 
     <!-- JavaScript for Modal Handling -->
     <script>
+
+function toggleUserInfo() {
+    var userInfo = document.getElementById('userInfo');
+    if (userInfo.style.display === "none") {
+        userInfo.style.display = "block";
+    } else {
+        userInfo.style.display = "none";
+    }
+}
         function showModal(userId) {
             document.getElementById('userIdToDelete').value = userId; // Set user ID in hidden input
             document.getElementById('myModal').style.display = 'flex'; // Show modal
