@@ -6,6 +6,14 @@ if (!isset($_SESSION['id'])) {
 }
 
 include 'db_connection.php';
+
+$user_id = $_SESSION['id'];
+$sql = "SELECT * FROM users WHERE id = '$user_id'";
+$result = $conn->query($sql);
+$user = $result->fetch_assoc();
+
+$role_id = $user['role_id']; 
+
 $message="";
 
 
@@ -26,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $sql = "INSERT INTO Category (Category_name) VALUES ('$category_name')";
         if ($conn->query($sql) === TRUE) {
              $message = "success";
+            
 
         } else {
             $message = "Error: " . $conn->error;
@@ -42,287 +51,125 @@ $categories = $conn->query($category_query);
 <html>
 <head>
     <title>Add Category</title>
+ 
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="add_category.css">
+    
     <style>
-        /* Reset default margins and paddings */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
+        
 
-        /* Main container for content */
-        .container {
-            background-color: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            width: 100%;
-            max-width: 450px;
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        label {
-            font-weight: bold;
-            color: #555;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 14px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #007bff;
-        }
-
-        button {
-            width: 100%;
-            padding: 14px;
-            font-size: 16px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        button:hover {
-            background-color: #0056b3;
-            transform: translateY(-2px);
-        }
-
-        button:active {
-            background-color: #003f7d;
-        }
-
-        .message {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #e7f3e7;
-            color: #4caf50;
-            border-radius: 5px;
-            text-align: center;
-        }
-
-        .message.error {
-            background-color: #f8d7da;
-            color: #dc3545;
-        }
-
-        .category-list {
-          
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            padding: 15px;
-            margin-top: 20px;
-            width: 100%;
-            max-width: 450px;
-        }
-
-        .category-list h3 {
-            font-size: 18px;
-            color: #333;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-
-        ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        li {
-            /* background-color: #007bff; */
-            color: black;
-            padding: 10px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            transition: background-color 0.3s ease-in-out;
-            font-weight:bold;
-        }
-
-        /* li:hover {
-            background-color: #0056b3;
-        } */
-
-        .btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-            font-weight: bold;
-        }
-
-        .btn:hover {
-            background-color: #0056b3;
-        }
-
-        .btn:active {
-            background-color: #003f7d;
-        }
-
-        #message-box{
-            color:red;
-        }
-
-        .modal {
-  display: none;
-  position: fixed;
-  z-index: 999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8); /* Darker backdrop for better contrast */
-  justify-content: center;
-  align-items: center;
-  animation: fadeIn 0.5s ease-in-out;
+    /* Existing styles */
+    .user-details {
+    /* border: 2px solid #A0AEC0; Calm neutral border color */
+    border-radius: 12px; /* Slightly smaller rounded corners */
+    /* Reduced inner padding */
+    background: linear-gradient(145deg, #f7fafc, #e2e8f0); /* Soft blue-gray gradient */
+    margin-bottom: 30px; /* Reduced margin */
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1), 
+                -2px -2px 8px rgba(255, 255, 255, 0.7); /* Smaller shadow */
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Reduced spacing between children */
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px; /* Reduced font size */
+    
+    transition: all 0.3s ease-in-out;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
 
-/* Modal content */
-.modal-content {
-  background: linear-gradient(135deg, #ffffff, #f0f4f9); /* Gradient for a modern look */
-  padding: 40px;
-  border-radius: 16px;
-  text-align: center;
-  width: 360px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-  transform: scale(0.9);
-  animation: popIn 0.3s ease-out forwards;
-}
-
-@keyframes popIn {
-  to {
-    transform: scale(1);
-  }
-}
-
-/* Heading */
-.modal-content h3 {
-  color: #333;
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 16px;
-}
-
-/* Buttons */
-.open-btn,
-.close-btn {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 12px 18px;
-  cursor: pointer;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-.open-btn:hover,
-.close-btn:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px);
-}
-
-.open-btn:active,
-.close-btn:active {
-  background-color: #003f7d;
-  transform: translateY(1px);
-}
-
-/* Spacing between elements */
-.modal-content p {
-  margin-bottom: 20px;
-}
-
-    </style>
+        </style>
 </head>
 <body>
-
-<a href="dashboard.php" class="btn">Go to Target Page</a>
-
-<form method="POST">
-    <label for="category_name">Category Name:</label>
-    <input type="text" name="category_name" required>
-    <button type="submit" >Add Category</button>
-</form>
-
-
-
-
-
-
-
-<!-- Display Categories in the corner -->
-<div class="category-list">
-    <h3>Category List</h3>
-    <ul>
-        <?php
-        if ($categories->num_rows > 0) {
-            while ($row = $categories->fetch_assoc()) {
-                echo "<li>" . htmlspecialchars($row['Category_name']) . "</li>";
-            }
-        } else {
-            echo "<li>No categories found.</li>";
-        }
-        ?>
-    </ul>
+<div class="container">
+    <!-- User Details -->
+    <div class="user-details">
+        <div class="header">
+            <h1><strong>Add Categories Here</strong></h1>
+        </div>
+        <!-- Profile Icon at the top right -->
+        <!-- // add profile icon when i clicked it shows pop up of first_name,last_name,email and all -->
+        
+        <div class="profile-icon-container">
+    <img src="https://th.bing.com/th?q=Best+Avatar+Profile+Icon&w=138&h=138&c=7&r=0&o=5&pid=1.7&mkt=en-IN&cc=IN&setlang=en&adlt=moderate&t=1" alt="Profile Icon" onclick="showProfileModal()" style="cursor: pointer; border-radius: 50%;">
 </div>
+    
+
+</div>
+       
+
+<div class="sidebar">
+        <h3 style="color: #ecf0f1; text-align: center;">Inventory</h3>
+        <a href="dashboard.php">Home</a>
+        <?php  if($role_id==1):   ?>
+        <a href="add_category.php">Add Category</a>
+        
+     
+        <a href="add_item.php">Add Item</a>
+        <a href="view_orders.php">View Orders</a>
+        <?php endif; ?>
+        <a href="view_inventory.php">View Inventory</a>
+        <?php  if($role_id==2):   ?>
+        <a href="add_orders.php">Orders</a>
+        <?php endif; ?>
+        <a href="logout.php">Logout</a>
+    </div>
+    
+       
+  
+
+    <?php if ($role_id == 1): ?>
+        <form method="POST">
+            <label for="category_name">Category Name:</label>
+            <input type="text" name="category_name" required>
+            <button type="submit">Add Category</button>
+        </form>
+   
+    
+    <!-- Display Categories in the corner -->
+    <div class="category-list">
+        <h3>Category List</h3>
+        <ul>
+            <?php
+            if ($categories->num_rows > 0) {
+                while ($row = $categories->fetch_assoc()) {
+                    echo "<li>" . htmlspecialchars($row['Category_name']) . "</li>";
+                }
+            } else {
+                echo "<li>No categories found.</li>";
+            }
+            ?>
+        </ul>
+    </div>
+    <?php endif; ?>
 
 <div id="simpleModal" class="modal">
     <div class="modal-content">
       <h3 id="modal-message">Category Added Successfully!</h3>
-      <button class="close-btn" onclick="closeModal()">Cancel</button>
+      <button class="close-btn" onclick="closeModal()">Ok</button>
+    </div>
+</div>
+
+
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <h3>User Profile</h3>
+        <p><strong>First Name:</strong> <?php echo $user['First_Name']; ?></p>
+        <p><strong>Last Name:</strong> <?php echo $user['Last_Name']; ?></p>
+        <p><strong>Email:</strong> <?php echo $user['email']; ?></p>
+        <button type="button" class="cancel-btn" onclick="closeProfileModal()">OK</button>
     </div>
 </div>
 
 <script>
+
+function showProfileModal() {
+        document.getElementById('profileModal').style.display = 'flex'; // Show modal
+    }
+
+    function closeProfileModal() {
+        document.getElementById('profileModal').style.display = 'none'; // Hide modal
+    }
     // Open Modal
     function openModal(message) {
       document.getElementById('simpleModal').style.display = 'flex';
@@ -332,6 +179,7 @@ $categories = $conn->query($category_query);
     // Close Modal
     function closeModal() {
       document.getElementById('simpleModal').style.display = 'none';
+      window.location.href = "dashboard.php";
     }
 
     // Trigger modal based on PHP result
@@ -339,6 +187,7 @@ $categories = $conn->query($category_query);
       var message = "<?php echo $message; ?>";
       if (message === "success") {
         openModal("Category added successfully!");
+       
       } else if (message) {
         openModal(message);
       }

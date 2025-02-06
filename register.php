@@ -9,8 +9,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
-    $role = $_POST['role'];
+    $role_name = $_POST['role'];
     
+
+
+
+    //check email uniqueness
+
+    $check_query = "SELECT * FROM users WHERE  email = '$email'";
+    $result = $conn->query($check_query);
+
+    if ($result->num_rows > 0) {
+        // If category already exists, display error message
+        echo "<script>
+                alert('Email already exists!');
+                window.history.back();
+              </script>";
+        exit;
+    }
 
        // Check username uniqueness
        $check_username = $conn->prepare("SELECT username FROM users WHERE username = ?");
@@ -18,6 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
        $check_username->execute();
        $check_username->store_result();
        
+
+    
 
 
        if ($check_username->num_rows > 0) {
@@ -47,9 +65,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit;
         }
 
+
+
+        $role_query = $conn->prepare("SELECT role_id FROM role WHERE role_name = ?");
+        $role_query->bind_param("s", $role_name);
+        $role_query->execute();
+        $role_query->store_result();
+        $role_query->bind_result($role_id);
+        $role_query->fetch();
+    
+        if (!$role_id) {
+            echo "<script>
+                    alert('Invalid role selected.');
+                    window.history.back();
+                  </script>";
+            exit;
+        }
+
     $hashed_password = password_hash($password, PASSWORD_BCRYPT); // Encrypt password
 
-    $sql = "INSERT INTO users (username,First_Name,Last_Name, email, password, role) VALUES ('$username','$First_Name','$Last_Name', '$email', '$hashed_password', '$role')";
+    $sql = "INSERT INTO users (username,First_Name,Last_Name, email, password, role_id) VALUES ('$username','$First_Name','$Last_Name', '$email', '$hashed_password', '$role_id')";
     if ($conn->query($sql)) {
         echo "<script>
                 alert('User successfully registered! You can now log in.');
@@ -205,14 +240,14 @@ form button:hover {
           <div>
             <input type="text" id="First_Name" name="First_Name" placeholder="Enter First Name" required>
 
-            <span id="emailError" class="error"></span>
+           
            </div>
 
 
            <div>
             <input type="text" id="Last_Name" name="Last_Name" placeholder="Enter Last Name" required>
 
-            <span id="emailError" class="error"></span>
+            
            </div>
 
 
@@ -268,7 +303,7 @@ form button:hover {
                 return false;
             }
             if (/^\d/.test(username)) {
-                showError('usernameError', 'Cannot start with number');
+                showError('usernameError', 'Username Cannot start with number');
                 return false;
             }
             if (!usernameRegex.test(username)) {

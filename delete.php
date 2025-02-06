@@ -5,10 +5,7 @@ if (!isset($_SESSION['id'])) {
     exit;
 }
 
-$conn = new mysqli("localhost", "root", "", "inv_mang");
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include 'db_connection.php';
 
 // Delete user with confirmation
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {

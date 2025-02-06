@@ -249,7 +249,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <div id="simpleModal" class="modal">
             <div class="modal-content">
                 <h3 id="modal-message">Items Added Successfully!</h3>
-                <button class="close-btn" onclick="closeModal()">Cancel</button>
+                <button class="close-btn" onclick="closeModal()">OK</button>
             </div>
         </div>
 
@@ -263,6 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Close Modal
             function closeModal() {
                 document.getElementById('simpleModal').style.display = 'none';
+                window.location.href="dashboard.php";
             }
 
             // Trigger modal based on PHP result

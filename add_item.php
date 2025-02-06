@@ -7,6 +7,13 @@ if (!isset($_SESSION['id'])) {
 
 include 'db_connection.php';
 
+$user_id = $_SESSION['id'];
+$sql = "SELECT * FROM users WHERE id = '$user_id'";
+$result = $conn->query($sql);
+$user = $result->fetch_assoc();
+
+$role_id = $user['role_id']; 
+
 
 // Fetch categories for dropdown
 $categories = $conn->query("SELECT * FROM Category");
@@ -32,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             VALUES ('$item_name', '$price', '$quantity', '$category_id')";
     if ($conn->query($sql) === TRUE) {
         $message = "success";
+       
     } else {
         $message = "Error: " . $conn->error;
     }
@@ -46,227 +54,76 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <html>
 <head>
     <title>Add Item</title>
-     <style>
-        /* General Body Styling */
-        /* General Body Styling */
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f0f4f9;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    color: #333;
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="add_items.css">
+    
+    <style>
+
+/* Existing styles */
+.user-details {
+/* Existing styles */
+border-radius: 12px;
+
+background: linear-gradient(145deg, #f7fafc, #e2e8f0);
+margin-bottom: 50px;
+box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1), 
+            -2px -2px 8px rgba(255, 255, 255, 0.7);
+display: flex;
+gap: 10px;
+width:85%;
+font-family: 'Poppins', sans-serif;
+font-size: 12px;
+transition: all 0.3s ease-in-out;
+
+/* New styles for positioning */
+position: fixed; 
+top: 20px; 
+left: 280px; 
+z-index: 1000; 
+
 }
 
-/* Form Container Styling */
-form {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    padding: 40px 50px;
-    width: 100%;
-    max-width: 450px;
-    box-sizing: border-box;
-    transition: transform 0.3s ease;
-}
 
-form:hover {
-    transform: translateY(-5px);
-}
-
-/* Form Heading Styling */
-form h2 {
-    font-size: 28px;
-    text-align: center;
-    color: #333;
-    margin-bottom: 25px;
-    font-weight: bold;
-}
-
-/* Label Styling */
-form label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: #666;
-}
-
-/* Input Field Styling */
-form input[type="text"],
-form input[type="number"],
-form select {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-sizing: border-box;
-    font-size: 16px;
-    background-color: #f9f9f9;
-    transition: border-color 0.3s ease;
-}
-
-/* Input Field Focus Effect */
-form input:focus,
-form select:focus {
-    border-color: #007bff;
-    background-color: #fff;
-    outline: none;
-}
-
-/* Button Styling */
-form button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 14px;
-    width: 100%;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    font-weight: bold;
-}
-
-/* Button Hover Effect */
-form button:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
-}
-
-/* Success/Error Message Styling */
-body p {
-    margin-top: 15px;
-    font-size: 15px;
-    text-align: center;
-}
-
-body p.success {
-    color: #28a745;
-}
-
-body p.error {
-    color: #dc3545;
-}
-
-.btn {
-    position: absolute;
-    top: 20px; /* Adjust as needed */
-    left: 20px; /* Adjust as needed */
-    padding: 12px 24px;
-    background-color: #007bff;
-    color: white;
-    text-align: center;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-    font-weight: bold;
-}
-
-.btn:hover {
-    background-color: #0056b3;
-}
-
-.btn:active {
-    background-color: #003f7d;
-}
-
-#message-box{
-    color:red;
-}
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8); /* Darker backdrop for better contrast */
-  justify-content: center;
-  align-items: center;
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* Modal content */
-.modal-content {
-  background: linear-gradient(135deg, #ffffff, #f0f4f9); /* Gradient for a modern look */
-  padding: 40px;
-  border-radius: 16px;
-  text-align: center;
-  width: 360px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-  transform: scale(0.9);
-  animation: popIn 0.3s ease-out forwards;
-}
-
-@keyframes popIn {
-  to {
-    transform: scale(1);
-  }
-}
-
-/* Heading */
-.modal-content h3 {
-  color: #333;
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 16px;
-}
-
-/* Buttons */
-.open-btn,
-.close-btn {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 12px 18px;
-  cursor: pointer;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-.open-btn:hover,
-.close-btn:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px);
-}
-
-.open-btn:active,
-.close-btn:active {
-  background-color: #003f7d;
-  transform: translateY(1px);
-}
-
-/* Spacing between elements */
-.modal-content p {
-  margin-bottom: 20px;
-}
 
     </style>
-   
 </head>
 <body>
 
+
+<div class="container">
+    <!-- User Details -->
+    <div class="user-details">
+        <div class="header">
+            <h1><strong>Add Items Here</strong></h1>
+        </div>
+        <!-- Profile Icon at the top right -->
+        <!-- // add profile icon when i clicked it shows pop up of first_name,last_name,email and all -->
+        
+        <div class="profile-icon-container">
+    <img src="https://th.bing.com/th?q=Best+Avatar+Profile+Icon&w=138&h=138&c=7&r=0&o=5&pid=1.7&mkt=en-IN&cc=IN&setlang=en&adlt=moderate&t=1" alt="Profile Icon" onclick="showProfileModal()" style="cursor: pointer; border-radius: 50%;">
+</div>
+    
+
+</div>
+
    
-<a href="dashboard.php" class="btn">Go to Target Page</a>
+
+<div class="sidebar">
+        <h3 style="color: #ecf0f1; text-align: center;">Inventory</h3>
+        <a href="dashboard.php">Home</a>
+        <?php  if($role_id==1):   ?>
+        <a href="add_category.php">Add Category</a>
+        
+        <a href="add_item.php">Add Item</a>
+        <a href="add_item.php">View Orders</a>
+
+        <?php endif; ?>
+        <a href="view_inventory.php">View Inventory</a>
+        <?php  if($role_id==2):   ?>
+        <a href="add_orders.php"> Add Orders</a>
+        <?php endif; ?>
+        <a href="logout.php">Logout</a>
+    </div>
     <form method="POST">
         <label for="item_name">Item Name:</label>
         <input type="text" name="item_name" required>
@@ -295,11 +152,30 @@ body p.error {
     <div id="simpleModal" class="modal">
     <div class="modal-content">
       <h3 id="modal-message">Items Added Successfully!</h3>
-      <button class="close-btn" onclick="closeModal()">Cancel</button>
+      <button class="close-btn" onclick="closeModal()">Ok</button>
+    </div>
+</div>
+
+
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <h3>User Profile</h3>
+        <p><strong>First Name:</strong> <?php echo $user['First_Name']; ?></p>
+        <p><strong>Last Name:</strong> <?php echo $user['Last_Name']; ?></p>
+        <p><strong>Email:</strong> <?php echo $user['email']; ?></p>
+        <button type="button" class="cancel-btn" onclick="closeProfileModal()">OK</button>
     </div>
 </div>
 
 <script>
+
+function showProfileModal() {
+        document.getElementById('profileModal').style.display = 'flex'; // Show modal
+    }
+
+    function closeProfileModal() {
+        document.getElementById('profileModal').style.display = 'none'; // Hide modal
+    }
     // Open Modal
     function openModal(message) {
       document.getElementById('simpleModal').style.display = 'flex';
@@ -309,6 +185,7 @@ body p.error {
     // Close Modal
     function closeModal() {
       document.getElementById('simpleModal').style.display = 'none';
+      window.location.href = "view_inventory.php";
     }
 
     // Trigger modal based on PHP result

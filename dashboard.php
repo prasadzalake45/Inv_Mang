@@ -8,317 +8,90 @@ if (!isset($_SESSION['id'])) {
 
 include 'db_connection.php';
 
+
 // Fetch user details
 $id = $_SESSION['id'];
 $sql = "SELECT * FROM users WHERE id='$id'";
 $result = $conn->query($sql);
 $user = $result->fetch_assoc();
 
+
 // Fetch all users for listing (Admin can see this)
-$sql_all_users = "SELECT * FROM users";
+$sql_all_users = "SELECT * FROM users WHERE role_id=2";
 $users_result = $conn->query($sql_all_users);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Dashboard</title>
-    <style>
-       body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f0f2f5;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    height: 100vh;
-}
-
-.sidebar {
-    width: 250px;
-    background-color: #2c3e50;
-    color: white;
-    padding-top: 20px;
-    position: fixed;
-    height: 100%;
-    top: 0;
-    left: 0;
-    border-right: 2px solid #34495e;
-}
-
-.sidebar a {
-    display: block;
-    padding: 15px;
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-    transition: background-color 0.3s;
-}
-
-.sidebar a:hover {
-    background-color: #34495e;
-}
-
-.container {
-    margin-left: 270px; /* To accommodate the sidebar */
-    width: calc(100% - 270px);
-    padding: 30px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-    position: relative;
-    transition: margin-left 0.3s ease;
-}
-
-
-
-.header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-right: 20px;
-}
-
-.header p {
-    font-size: 20px;
-    color: #333;
-    margin-right: 20px;
-    margin-bottom: 10px;
-}
+    <title>Inventory</title>
+    <link rel="stylesheet" href="dashboard.css">
+     <style>
 
 .user-details {
+    /* border: 2px solid #A0AEC0; Calm neutral border color */
+    border-radius: 12px; /* Slightly smaller rounded corners */
+    /* Reduced inner padding */
+    background: linear-gradient(145deg, #f7fafc, #e2e8f0); /* Soft blue-gray gradient */
+    margin-bottom: 30px; /* Reduced margin */
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1), 
+                -2px -2px 8px rgba(255, 255, 255, 0.7); /* Smaller shadow */
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    background-color: #fff;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-}
-
-.view-info-btn {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-    align-self: flex-end; /* Align the button to the left */
-    margin-top: 10px; /* Add space between the info and the button */
-}
-
-.view-info-btn:hover {
-    background-color: #0056b3;
-}
-
-.user-info {
-    display: none;
-    margin-top: 10px;
-    font-size: 16px;
-    color: #555;
-}
-
-
-.logout-btn {
-    background-color: #ff4d4d;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s;
-}
-
-.logout-btn:hover {
-    background-color: #e60000;
-}
-
-h2 {
-    font-size: 24px;
-    margin-bottom: 15px;
-    color: #333;
-    font-weight: bold;
-}
-
-p {
-    font-size: 16px;
-    color: #555;
-    margin-bottom: 10px;
-}
-
-.buttons {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-    margin-top: 30px;
-}
-
-.buttons a {
-    background-color: #007bff;
-    color: white;
-    padding: 15px 0;
-    text-align: center;
-    border-radius: 5px;
-    font-size: 18px;
-    font-weight: bold;
-    transition: background-color 0.3s;
-}
-
-.buttons a:hover {
-    background-color: #0056b3;
-}
-
-.buttons a:active {
-    background-color: #003f7d;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        width: 100%;
-        margin-left: 0;
-        padding: 20px;
-    }
-
-    .buttons {
-        grid-template-columns: 1fr;
-    }
-
-    .sidebar {
-        width: 200px;
-    }
-}
-
-/* Table Styling */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 30px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-}
-
-table, th, td {
-    border: 1px solid #ddd;
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-}
-
-th {
-    background-color: #f4f4f4;
-    font-weight: bold;
-}
-
-td {
-    background-color: #f9f9f9;
-}
-
-.user-action-btn {
-    padding: 5px 10px;
-    background-color: #007bff;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    margin-right: 5px;
-    transition: background-color 0.3s;
-}
-
-.user-action-btn:hover {
-    background-color: #0056b3;
-}
-
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed;
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
-    justify-content: center;
     align-items: center;
+    gap: 10px; /* Reduced spacing between children */
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px; /* Reduced font size */
+    
+    transition: all 0.3s ease-in-out;
 }
 
-.modal-content {
-    background-color: #fefefe;
-    padding: 20px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-}
 
-.modal button {
-    margin: 10px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.delete-btn {
-    background-color: #dc3545; /* Red */
-    color: white;
-}
-
-.delete-btn:hover {
-    background-color: #c82333; /* Darker red */
-}
-
-.cancel-btn {
-    background-color: #6c757d; /* Gray */
-    color: white;
-}
-
-.cancel-btn:hover {
-    background-color: #5a6268; /* Darker gray */
-}
     </style>
 </head>
 <body>
     <!-- Sidebar -->
     <div class="sidebar">
-        <h3 style="color: #ecf0f1; text-align: center;">Dashboard</h3>
+        <h3 style="color: #ecf0f1; text-align: center;">Inventory</h3>
         <a href="dashboard.php">Home</a>
+        <?php if ($user['role_id'] == 1)  :  ?>
         <a href="add_category.php">Add Category</a>
+      
         <a href="add_item.php">Add Item</a>
+        <a href="view_orders.php">View Order</a>
+
+        <?php endif; ?>
         <a href="view_inventory.php">View Inventory</a>
-        <a href="add_orders.php">Orders</a>
+        <?php  if($user['role_id'] ==2):   ?>
+        <a href="add_orders.php">Add Orders</a>
+        <a href="userwise.php">Your Cart</a>
+
+        <?php endif; ?>
         <a href="logout.php">Logout</a>
     </div>
 
     <!-- Main Content -->
-    <div class="container">
+
         <!-- User Details -->
         <div class="container">
     <!-- User Details -->
     <div class="user-details">
         <div class="header">
-            <p><strong>Welcome, <?php echo $user['username']; ?>!</strong></p>
-            
-            <p>Role :<?php echo $user['role']; ?></p>
-            
+            <h1><strong>Welcome, <?php echo $user['username']; ?>!</strong></h1>
         </div>
-        <button class="view-info-btn" onclick="toggleUserInfo()">View Info</button>
-        <div id="userInfo" class="user-info" style="display: none;">
-            <p><strong>First Name:</strong> <?php echo $user['First_Name']; ?></p>
-            <p><strong>Last Name:</strong> <?php echo $user['Last_Name']; ?></p>
-        </div>
-    </div>
-</div>
+        <!-- Profile Icon at the top right -->
+        <!-- // add profile icon when i clicked it shows pop up of first_name,last_name,email and all -->
         
+        <div class="profile-icon-container">
+    <img src="https://th.bing.com/th?q=Best+Avatar+Profile+Icon&w=138&h=138&c=7&r=0&o=5&pid=1.7&mkt=en-IN&cc=IN&setlang=en&adlt=moderate&t=1" alt="Profile Icon" onclick="showProfileModal()" style="cursor: pointer; border-radius: 50%;">
+</div>
+    
+
+</div>
+       
        
 
         <!-- User Listing (Admin only) -->
-        <?php if ($user['role'] == 'admin') : ?>
+        <?php if ($user['role_id'] == 1) : ?>
             <h3>All Users:</h3>
             <table>
                 <tr>
@@ -367,17 +140,27 @@ td {
         </div>
     </div>
 
+
+    <div id="profileModal" class="modal">
+    <div class="modal-content">
+        <h3>User Profile</h3>
+        <p><strong>First Name:</strong> <?php echo $user['First_Name']; ?></p>
+        <p><strong>Last Name:</strong> <?php echo $user['Last_Name']; ?></p>
+        <p><strong>Email:</strong> <?php echo $user['email']; ?></p>
+        <button type="button" class="cancel-btn" onclick="closeProfileModal()">OK</button>
+    </div>
+</div>
+
     <!-- JavaScript for Modal Handling -->
     <script>
-
-function toggleUserInfo() {
-    var userInfo = document.getElementById('userInfo');
-    if (userInfo.style.display === "none") {
-        userInfo.style.display = "block";
-    } else {
-        userInfo.style.display = "none";
+         function showProfileModal() {
+        document.getElementById('profileModal').style.display = 'flex'; // Show modal
     }
-}
+
+    function closeProfileModal() {
+        document.getElementById('profileModal').style.display = 'none'; // Hide modal
+    }
+
         function showModal(userId) {
             document.getElementById('userIdToDelete').value = userId; // Set user ID in hidden input
             document.getElementById('myModal').style.display = 'flex'; // Show modal
