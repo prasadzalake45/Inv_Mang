@@ -94,7 +94,7 @@ if ($result->num_rows > 0) {
                     <h3>User ID: " . $row['user_id'] . "</h3>
                     <p><strong>Name:</strong> " . $row['First_Name'] . " " . $row['Last_Name'] . "</p>
                     <p><strong>Username:</strong> " . $row['username'] . "</p>
-                    <p><strong>Email:</strong> " . $row['email'] . "</p>
+                    
                     <h4>Orders:</h4>
                     <div class='order-details'>
                         <table>

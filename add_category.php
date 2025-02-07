@@ -61,12 +61,12 @@ $categories = $conn->query($category_query);
 
     /* Existing styles */
     .user-details {
-    /* border: 2px solid #A0AEC0; Calm neutral border color */
-    border-radius: 12px; /* Slightly smaller rounded corners */
-    /* Reduced inner padding */
+    /* Increased width */
+   height:55px;
+    
     background: linear-gradient(145deg, #f7fafc, #e2e8f0); /* Soft blue-gray gradient */
     margin-bottom: 30px; /* Reduced margin */
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1), 
+    box-shadow: 2px 2px 18px rgba(0, 0, 0, 0.1), 
                 -2px -2px 8px rgba(255, 255, 255, 0.7); /* Smaller shadow */
     display: flex;
     align-items: center;

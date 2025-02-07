@@ -133,20 +133,25 @@ tr:nth-child(even) {
         .order-form button:hover {
             background-color: #218838;
         }
-
+        
         .order-summary {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            background-color: #ffffff;
-            border: 2px solid #007bff;
-            padding: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            width: 250px;
-            max-height: 300px;
-            overflow-y: auto;
-            display: none;
-        }
+    position: fixed;
+    top: 30%;
+    right: 10px;
+    transform: translateY(-50%);
+    background-color: #ffffff;
+    border: 2px solid #007bff;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    max-height: 300px;
+    overflow-y: auto;
+    display: none;
+    margin-right:50px;
+   
+   
+}
+
 
         .order-summary h3 {
             text-align: center;
@@ -176,6 +181,11 @@ tr:nth-child(even) {
         .submit-btn:hover {
             background-color: #218838;
         }
+        .cont {
+    position: absolute; /* Or use fixed if you want it to stay fixed during scrolling */
+    top: 20px;
+    left: 270px;
+}
 /* Responsive Table Design */
 @media (max-width: 768px) {
     th, td {
@@ -206,42 +216,46 @@ tr:nth-child(even) {
         <?php  if($role_id==2):   ?>
         <a href="add_orders.php">Orders</a>
         <?php endif; ?>
-        <a href="logout.php">Logout</a>
+        <a href="logout.php">Logout</a>     
 </div>
 
     <!-- Main Content -->
+    <div class="cont">
+        <h1>Add Order </h1>
+        </div>
 
     <div class="main-content">
 
     <table>
+    <tr>
+        <th>Item Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Order Quantity</th> <!-- Add title for the 'Add' section -->
+    </tr>
+    <?php while ($row = $result->fetch_assoc()) { ?>
         <tr>
-            <th>Item Name</th>
-            <th>Category</th>
-            <th>Price</th>
-            <th>Quantity</th>
+            <td><?php echo $row['Item_name']; ?></td>
+            <td><?php echo $row['Category_name']; ?></td>
+            <td><?php echo $row['price']; ?></td>
+            <td><?php echo $row['quantity']; ?></td>
+
+            <td>
+                <form class="order-form" method="POST" onsubmit="event.preventDefault(); addToOrder(<?php echo $row['Item_id']; ?>, '<?php echo $row['Item_name']; ?>', <?php echo $row['price']; ?>)">
+                    <input type="number" name="order_quantity" min="0" max="<?php echo $row['quantity']; ?>" required id="quantity-<?php echo $row['Item_id']; ?>"/>
+                    <input type="hidden" name="item_id" value="<?php echo $row['Item_id']; ?>"/>
+                    <button type="button" onclick="addToOrder(<?php echo $row['Item_id']; ?>, '<?php echo $row['Item_name']; ?>', <?php echo $row['price']; ?>)">Add</button>
+                </form>
+            </td>
         </tr>
-        <?php while ($row = $result->fetch_assoc()) { ?>
-            <tr>
-                <td><?php echo $row['Item_name']; ?></td>
-                <td><?php echo $row['Category_name']; ?></td>
-                <td><?php echo $row['price']; ?></td>
-                <td><?php echo $row['quantity']; ?></td>
+    <?php } ?>
+</table>
 
-                <td>
-    <form class="order-form" method="POST" onsubmit="event.preventDefault(); addToOrder(<?php echo $row['Item_id']; ?>, '<?php echo $row['Item_name']; ?>', <?php echo $row['price']; ?>)">
-        <input type="number" name="order_quantity" min="0" max="<?php echo $row['quantity'];?>" required id="quantity-<?php echo $row['Item_id']; ?>"/>
-        <input type="hidden" name="item_id" value="<?php echo $row['Item_id']; ?>"/>
-        <button type="button" onclick="addToOrder(<?php echo $row['Item_id']; ?>, '<?php echo $row['Item_name']; ?>', <?php echo $row['price']; ?>)">Add</button>
-    </form>
-</td>
-
-            </tr>
-        <?php } ?>
-    </table>
 
 
     <!-- Order Summary -->
-<div class="order-summary" id="orderSummary">
+    <div class="order-summary" id="orderSummary">
     <h3>Order Summary</h3>
     <table id="orderTable"></table>
     <form method="POST">
@@ -250,34 +264,29 @@ tr:nth-child(even) {
     </form>
 </div>
 
+
 <script>
 let orderDetails = [];
 
 function addToOrder(itemId, itemName, itemPrice) {
-    // Get the quantity from the input field
     let quantity = document.getElementById('quantity-' + itemId).value;
     quantity = parseInt(quantity);
 
-    // Validate the quantity
     if (quantity > 0) {
-        // Check if the item already exists in the order
         let existingOrderIndex = orderDetails.findIndex(order => order.item_id === itemId);
         if (existingOrderIndex !== -1) {
-            // Update the quantity if the item already exists
-            orderDetails[existingOrderIndex].quantity += quantity;  // Add quantity to the existing order
-            orderDetails[existingOrderIndex].total_price = orderDetails[existingOrderIndex].quantity * itemPrice;  // Update total price
+            orderDetails[existingOrderIndex].quantity += quantity;
+            orderDetails[existingOrderIndex].total_price = orderDetails[existingOrderIndex].quantity * itemPrice;
         } else {
-            // Add the item to the order array
             orderDetails.push({
                 item_id: itemId,
                 item_name: itemName,
                 quantity: quantity,
                 price: itemPrice,
-                total_price: quantity * itemPrice  // Store total price for this item
+                total_price: quantity * itemPrice
             });
         }
 
-        // Update the order summary
         updateOrderSummary();
     } else {
         alert('Invalid quantity.');
@@ -290,26 +299,33 @@ function updateOrderSummary() {
     let totalQuantity = 0;
     let totalPrice = 0;
 
-    orderDetails.forEach(order => {
+    orderDetails.forEach((order, index) => {
         const row = document.createElement('tr');
-        row.innerHTML = `<td>${order.item_name}</td><td>${order.quantity}</td><td>${order.total_price.toFixed(2)}</td>`;
+        row.innerHTML = `
+            <td>${order.item_name}</td>
+            <td>${order.quantity}</td>
+            <td>${order.total_price.toFixed(2)}</td>
+            <td><button type="button" onclick="deleteOrder(${index})">Delete</button></td>
+        `;
         orderTable.appendChild(row);
-        
+
         totalQuantity += order.quantity;
         totalPrice += order.total_price;
     });
 
-    // Display total quantity and price at the bottom of the summary
     const totalRow = document.createElement('tr');
-    totalRow.innerHTML = `<td><strong>Total</strong></td><td><strong>${totalQuantity}</strong></td><td><strong>${totalPrice.toFixed(2)}</strong></td>`;
+    totalRow.innerHTML = `<td><strong>Total</strong></td><td><strong>${totalQuantity}</strong></td><td><strong>${totalPrice.toFixed(2)}</strong></td><td></td>`;
     orderTable.appendChild(totalRow);
 
-    // Show the order summary
     document.getElementById('orderSummary').style.display = 'block';
-
-    // Store the order details in the hidden input field as JSON
     document.getElementById('orderDetailsInput').value = JSON.stringify(orderDetails);
 }
+
+function deleteOrder(index) {
+    orderDetails.splice(index, 1); // Remove the order at the specified index
+    updateOrderSummary(); // Update the order table
+}
+
 
 </script>
         </div>

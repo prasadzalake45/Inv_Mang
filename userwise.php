@@ -24,123 +24,121 @@ $result = $conn->query($sql);
     <title>Your Cart</title>
     <style>
     /* Global Styles */
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f4f7fc;
-        margin: 0;
-        padding: 20px;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        min-height: 100vh;
-        flex-direction: column;
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7fc;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+table {
+    margin-left:450px;
+    width: 80%;
+    max-width: 900px;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 20px;
+
+}
+
+th, td {
+    padding: 16px;
+    font-size: 16px;
+    text-align: left;
+}
+
+th {
+    background-color: #007bff;
+    color: white;
+    font-weight: 600;
+    border-bottom: 3px solid #0056b3;
+}
+
+td {
+    background-color: #fafafa;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:hover td {
+    background-color: #f1f3f8;
+}
+
+/* Cart Summary Section */
+.cart-summary {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.cart-summary p {
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Checkout Button */
+.submit-btn {
+    padding: 12px 24px;
+    background-color: #28a745;
+    color: white;
+    font-size: 1.2rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #218838;
+}
+
+/* Empty Cart Message */
+.empty-cart-message {
+    font-size: 1.2rem;
+    color: #888;
+    text-align: center;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    table {
+        width: 100%;
     }
 
     h1 {
-        text-align: center;
-        font-size: 2rem;
-        color: #333;
-        margin-bottom: 30px;
+        font-size: 1.8rem;
     }
 
-    table {
-        width: 80%;
-        max-width: 900px;
-        border-collapse: collapse;
-        background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        margin-bottom: 20px;
-    }
-
-    th, td {
-        padding: 16px;
-        font-size: 16px;
-        text-align: left;
-    }
-
-    th {
-        background-color: #007bff;
-        color: white;
-        font-weight: 600;
-        border-bottom: 3px solid #0056b3;
-    }
-
-    td {
-        background-color: #fafafa;
-        color: #333;
-        border-bottom: 1px solid #ddd;
-    }
-
-    tr:hover td {
-        background-color: #f1f3f8;
-    }
-
-    /* Cart Summary Section */
-    .cart-summary {
-        text-align: center;
-        margin-top: 30px;
-        font-size: 1.2rem;
-        font-weight: 600;
-    }
-
-    .cart-summary p {
-        font-size: 1.5rem;
-        color: #333;
-        font-weight: bold;
-    }
-
-    /* Checkout Button */
     .submit-btn {
-        padding: 12px 24px;
-        background-color: #28a745;
-        color: white;
-        font-size: 1.2rem;
-        border: none;
-        cursor: pointer;
-        border-radius: 5px;
-        margin-top: 15px;
-        transition: background-color 0.3s ease;
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    th, td {
+        padding: 12px;
+        font-size: 14px;
     }
 
-    .submit-btn:hover {
-        background-color: #218838;
+    .submit-btn {
+        width: 100%;
     }
+}
 
-    /* Empty Cart Message */
-    .empty-cart-message {
-        font-size: 1.2rem;
-        color: #888;
-        text-align: center;
-    }
-
-    /* Responsive Design */
-    @media screen and (max-width: 768px) {
-        table {
-            width: 100%;
-        }
-
-        h1 {
-            font-size: 1.8rem;
-        }
-
-        .submit-btn {
-            font-size: 1rem;
-            padding: 10px 20px;
-        }
-    }
-
-    @media screen and (max-width: 480px) {
-        th, td {
-            padding: 12px;
-            font-size: 14px;
-        }
-
-        .submit-btn {
-            width: 100%;
-        }
-    }
 </style>
 </head>
 <body>

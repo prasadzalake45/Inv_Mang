@@ -63,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 .user-details {
 /* Existing styles */
 border-radius: 12px;
+height:55px;
 
 background: linear-gradient(145deg, #f7fafc, #e2e8f0);
 margin-bottom: 50px;
